@@ -24,13 +24,13 @@ tree_dic = {
 }
 
 count = 0
-def find_alex(tree_dic):
+def find_alex(info, tree_dic):
     global count
     for k,v in tree_dic.items():
-        if v == 'alex':
+        if v == info:
             count += 1
         elif type(v) is dict:
-            find_alex(v)
+            find_alex(info, v)
 
-find_alex(tree_dic)
+find_alex('alex', tree_dic)
 print count
