@@ -31,6 +31,6 @@ def find_alex(tree_dic):
             count += 1
         elif type(v) is dict:
             find_alex(v)
-
+11
 find_alex(tree_dic)
 print count
