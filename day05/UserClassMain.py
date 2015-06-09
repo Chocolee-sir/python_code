@@ -19,19 +19,20 @@ class UserClass(object):
     def check_user(self):
         sql = "select 1 from user where username = '%s' limit 1" %self.user
         if self.s.query(sql) == 1:
-           return True
+            return True
+
+
+    def find_passwd(self):
+        sql = "select passwd from user where username = '%s'" %self.user
+        return self.s.queryRow(sql)[0]
 
     def add_user(self):
-        if self.check_user():
-            print('您注册的用户已存在，请输入其他的用户')
-            return False
-        else:
-            user_info = {'username': '%s'%self.user, 'passwd': '%s'%self.check_md5(self.passwd)}
-            self.s.insert('user',user_info)
-            self.s.commit()
-            self.s.close()
-            print('恭喜%s~~注册会员成功~~~'%self.user)
-            return True
+        user_info = {'username': '%s'%self.user, 'passwd': '%s'%self.check_md5(self.passwd)}
+        self.s.insert('user',user_info)
+        self.s.commit()
+        self.s.close()
+        print('恭喜%s~~注册会员成功~~~'%self.user)
+        return True
 
     def lock_status(self):
         if self.check_user():
@@ -85,8 +86,7 @@ class UserClass(object):
                         print('请输入正确！！！！')
 
 
-a = UserClass('admin','admin')
-a.super_user()
+
 
 
 

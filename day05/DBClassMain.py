@@ -20,12 +20,6 @@ class DbInterface(object):
         except MySQLdb.Error,e:
             print "MySQLdb Error",e
 
-    #def selectDb(self,db):
-    #    try:
-    #      self.conn.select_db(db)
-    #    except MySQLdb.Error as e:
-    #      print("Mysql Error %d: %s" % (e.args[0], e.args[1]))
-
     def query(self,sql):
         try:
            n=self.cur.execute(sql)
@@ -57,12 +51,6 @@ class DbInterface(object):
         value = ','.join(p_data.values())
         real_sql = "INSERT INTO " + p_table_name + "(" + key + ") VALUES (" + value + ")"
         return self.query(real_sql)
-
-   # def getLastInsertId(self):
-     #   return self.cur.lastrowid
-
-   # def rowcount(self):
-     #   return self.cur.rowcount
 
     def commit(self):
         self.conn.commit()
