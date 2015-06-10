@@ -20,7 +20,8 @@ class UserClass(object):
         sql = "select 1 from user where username = '%s' limit 1" %self.user
         if self.s.query(sql) == 1:
             return True
-
+        else:
+            return False
 
     def find_passwd(self):
         sql = "select passwd from user where username = '%s'" %self.user
@@ -38,6 +39,15 @@ class UserClass(object):
         if self.check_user():
             sql = "select flag from user where username = '%s'" %self.user
             return self.s.queryRow(sql)[0]
+        else:
+            return False
+
+    def lock_user(self):
+        if self.check_user():
+            sql = "update user set flag = 1 where username = '%s'" %self.user
+            self.s.query(sql)
+            self.s.commit()
+            self.s.close()
         else:
             return False
 
