@@ -26,8 +26,31 @@ class MyServer(SocketServer.BaseRequestHandler):
                 if os.listdir(path) == []:
                     self.request.send('None')
                 else:
-                    #os.listdir(path) 从这开始
-                    #self.request.send()
+                    line = ''
+                    for i in os.listdir(path):
+                        line = line + '%s\n' %i
+                    self.request.send(line.strip())
+            else:
+                data = data.split('|')
+                if data[0] == "put":
+                    filename_from_cli,file_size = data[1],int(data[2])
+                    file_name = '%s/%s' %(path,filename_from_cli)
+                    f = file(file_name,'wb')
+                    recv_size = 0
+                    flag = True
+                    while flag:
+                        if recv_size + 4096> file_size :
+                            recv_data = self.request.recv(file_size - recv_size)
+                            flag = False
+                        else:
+                            recv_data = self.request.recv(4096)
+                            recv_size += 4096
+                        f.write(recv_data)
+
+                    print "Receving file success!"
+                    f.close()
+
+
 
 
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # encoding:utf-8
-__author__ = 'Chocolee'
-
+from __future__ import division
 from UserClassMain import *
-import socket
+import socket,os,sys,time
+__author__ = 'Chocolee'
 
 def meu():
     dic = {
@@ -15,6 +15,15 @@ def meu():
     for k,v in sorted(dic.items() ,key = lambda x:x[0] ,reverse=False):
         print k,v
 
+
+def progress_test(transfer_time):
+    bar_length=20
+    for percent in xrange(0, 101):
+        hashes = '#' * int(percent/100.0 * bar_length)
+        spaces = ' ' * (bar_length - len(hashes))
+        sys.stdout.write("\rPercent: [%s] %d%%"%(hashes + spaces, percent))
+        sys.stdout.flush()
+        time.sleep(transfer_time)
 
 
 def register_user():
@@ -47,7 +56,7 @@ def register_user():
 
 
 def ftp_client(user):
-    n = '语法:\nput e:/abc.txt\nget 123.txt\nls'
+    n = '语法:\nput e:/abc.txt\nget 123.txt d:/\nls'
     m_list = ['ls 查看目录下的文件','put 上传','get 下载']
     host = '127.0.0.1'
     port = 9999
@@ -65,13 +74,56 @@ def ftp_client(user):
     #s.close()
     print(n)
     while True:
-        info = raw_input('请输入指令:').strip()
+        info = raw_input('请输入指令(exit返回上级):').strip()
+        if info == '':
+            print('不能为空~~~~')
+            continue
+        if info == 'exit':
+            break
         if info == 'ls':
             s.sendall(info)
             data = s.recv(1024)
             print('+++++文件列表+++++')
             print data
             print('+'*18)
+        else:
+            info = info.split()
+            #print info
+            if info[0] == 'put' or info[0] == 'get':
+                if info[0] == 'put' and len(info) == 2:
+                    if os.path.exists(info[1]):
+                        file_name = os.path.basename(info[1])
+                        file_size =os.stat(info[1]).st_size
+                        s.send(info[0]+"|"+file_name+'|'+str(file_size))
+                        #print(file_size)
+                        send_size = 0
+                        b= '%'
+                        f = file(info[1],'rb')
+                        flag = True
+                        while flag:
+                            if send_size + 4096 >file_size:
+                                data = f.read()
+                                flag  = False
+                            else:
+                                data = f.read(4096)
+                                send_size += 4096
+                                com = int(round(send_size/file_size*100))
+                                sys.stdout.write("\r上传文件'%s': %d%s"%(file_name,com,b))
+                                sys.stdout.flush()
+                            s.send(data)
+                        f.close()
+
+                        print('\n')
+
+                    else:
+                        print('%s 不存在,请重新输入'%info[1])
+                        continue
+            else:
+                print('语法错误~~请输入正确的语法！！')
+                continue
+
+
+
 
 
 
