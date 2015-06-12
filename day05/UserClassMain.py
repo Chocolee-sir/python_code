@@ -3,6 +3,15 @@
 __author__ = 'Chocolee'
 import hashlib,time
 from DBClassMain import *
+from hashlib import md5
+
+def md5_file(name):
+    m = md5()
+    a_file = open(name, 'rb')    #需要使用二进制格式读取文件内容
+    m.update(a_file.read())
+    a_file.close()
+    return m.hexdigest()
+
 
 class UserClass(object):
     s = DbInterface('10.10.206.193','chocolee','123456','chocolee')

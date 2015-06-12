@@ -4,6 +4,7 @@ __author__ = 'Chocolee'
 
 import SocketServer
 import os,sys,time
+from UserClassMain import *
 
 class MyServer(SocketServer.BaseRequestHandler):
     def setup(self):
@@ -39,21 +40,37 @@ class MyServer(SocketServer.BaseRequestHandler):
                     recv_size = 0
                     flag = True
                     while flag:
-                        if recv_size + 4096> file_size :
+                        if recv_size + 1024> file_size :
                             recv_data = self.request.recv(file_size - recv_size)
                             flag = False
                         else:
-                            recv_data = self.request.recv(4096)
-                            recv_size += 4096
+                            recv_data = self.request.recv(1024)
+                            recv_size += 1024
                         f.write(recv_data)
-
-                    print "Receving file success!"
                     f.close()
+                    time.sleep(1)
+                    self.request.send(md5_file('%s'%file_name))
+                    print "put Receving file success!"
 
-
-
-
-
+                elif data[0] == 'get':
+                    file_path = '%s/%s' %(path,data[1])
+                    file_size = os.stat(file_path).st_size
+                    self.request.send(str(file_size))
+                    file_size = int(file_size)
+                    send_size = 0
+                    f = file(file_path,'rb')
+                    flag = True
+                    while flag:
+                        if send_size + 1024 > file_size:
+                            data = f.read(file_size - send_size)
+                            flag = False
+                        else:
+                            data = f.read(1024)
+                            send_size += 1024
+                        self.request.send(data)
+                    f.close()
+                    self.request.send(md5_file('%s'%file_path))
+                    print "put Sending file success!"
 
     def finish(self):
         pass
