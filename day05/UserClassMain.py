@@ -40,7 +40,6 @@ class UserClass(object):
         user_info = {'username': '%s'%self.user, 'passwd': '%s'%self.check_md5(self.passwd)}
         self.s.insert('user',user_info)
         self.s.commit()
-        self.s.close()
         print('恭喜%s~~注册会员成功~~~'%self.user)
         return True
 

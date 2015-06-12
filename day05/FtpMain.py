@@ -152,7 +152,7 @@ def ftp_client(user):
                             print('输入的路径不存在，请输入正确的路径.')
                             continue
                     else:
-                        print('%s文件在远端目录不存在，请输入ls, 查看存在的文件..')
+                        print('%s文件在远端目录不存在，请输入ls, 查看存在的文件..'%info[1])
                         continue
                 else:
                     print('语法错误~~请输入正确的语法！！')
@@ -160,9 +160,6 @@ def ftp_client(user):
             else:
                 print('语法错误~~请输入正确的语法！！')
                 continue
-
-
-
 
 
 
@@ -187,8 +184,8 @@ def ftp_login():
                 if passwd == 'exit':
                     break
                 if u.check_md5(passwd) == u.find_passwd():
-                    #调ftp接口
-                    print('Login')
+                    ftp_client(info)
+                    status = True
                     break
                 else:
                     count -= 1
@@ -201,7 +198,22 @@ def ftp_login():
         if status:break
 
 
+def running():
+    while True:
+        meu()
+        choice = raw_input('请选择:').strip()
+        if choice == '1':
+            register_user()
+        elif choice == '2':
+            ftp_login()
+        elif choice == '3':
+            break
+        else:
+            print('请输入正确的选项。')
 
 
-ftp_client('liyiliang')
+if __name__ == '__main__':
+    running()
+
+
 
