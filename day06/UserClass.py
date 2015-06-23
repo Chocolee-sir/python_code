@@ -49,14 +49,8 @@ class UserInfo(object):
         info_dic = self.s.queryAll(sql)
         return info_dic
 
-    def admin_list(self):
-        sql = "SELECT DISTINCT hostinfo FROM host;"
-        info_dic = self.s.queryAll(sql)
-        for k,v in info_dic.items():
-            print '%s:%s' %(k,v[0])
-
     def admin_info(self):
-        sql = "SELECT DISTINCT hostinfo FROM host;"
+        sql = "SELECT hostinfo,groupname FROM host;"
         info_dic = self.s.queryAll(sql)
         return info_dic
 
