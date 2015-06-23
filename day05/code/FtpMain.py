@@ -5,6 +5,7 @@ from UserClassMain import *
 import socket,os,sys,time
 __author__ = 'Chocolee'
 
+#开始菜单
 def meu():
     dic = {
         '1': '注册FTP会员',
@@ -16,6 +17,7 @@ def meu():
         print k,v
 
 
+#注册用户函数
 def register_user():
     while True:
         info = raw_input('请输入新会员账号(输入exit返回到上级):').strip()
@@ -45,11 +47,12 @@ def register_user():
         if status:break
 
 
+#ftp上传下载函数
 def ftp_client(user):
     n = '语法:\nput e:/abc.txt\nget 123.txt d:/\nls'
     m_list = ['ls 查看目录下的文件','put 上传','get 下载']
     host = '127.0.0.1'
-    port = 9999
+    port = 10000
     print('=====%s 欢迎登陆ftp服务=====\n您可有以下命令操作:'%user)
     print('+'*19)
     for i in m_list:
@@ -100,6 +103,7 @@ def ftp_client(user):
                                 com = int(round(send_size/file_size*100))
                                 sys.stdout.write("\r上传文件'%s': %d%s"%(file_name,com,b))
                             sys.stdout.flush()
+                            time.sleep(0.001)
                             s.send(data)
                         f.close()
                         md5_num = s.recv(1024)
@@ -137,6 +141,7 @@ def ftp_client(user):
                                     com = int(round(recv_size/file_size*100))
                                     sys.stdout.write("\r下载文件'%s'至%s: %s%s"%(info[1],info[2],com,b))
                                 sys.stdout.flush()
+                                time.sleep(0.001)
                                 f.write(recv_data)
                             f.close()
                             md5_num = s.recv(1024)
@@ -163,6 +168,7 @@ def ftp_client(user):
 
 
 
+#登录函数
 def ftp_login():
     while True:
         info = raw_input('请输入账号(输入exit返回到上级):').strip()
@@ -198,6 +204,7 @@ def ftp_login():
         if status:break
 
 
+#主运行函数
 def running():
     while True:
         meu()

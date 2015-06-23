@@ -3,6 +3,7 @@
 __author__ = 'Chocolee'
 import MySQLdb
 
+#数据库接口类
 class DbInterface(object):
 
     def __init__(self,host,user,password,dbname,charset="utf8"):

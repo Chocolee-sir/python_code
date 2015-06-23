@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # encoding:utf-8
 __author__ = 'Chocolee'
-
 import SocketServer
 import os,sys,time
 from UserClassMain import *
 
+#ftp服务端类
 class MyServer(SocketServer.BaseRequestHandler):
     def setup(self):
         pass
@@ -46,6 +46,7 @@ class MyServer(SocketServer.BaseRequestHandler):
                         else:
                             recv_data = self.request.recv(1024)
                             recv_size += 1024
+                        time.sleep(0.001)
                         f.write(recv_data)
                     f.close()
                     time.sleep(1)
@@ -67,6 +68,7 @@ class MyServer(SocketServer.BaseRequestHandler):
                         else:
                             data = f.read(1024)
                             send_size += 1024
+                        time.sleep(0.001)
                         self.request.send(data)
                     f.close()
                     self.request.send(md5_file('%s'%file_path))
@@ -76,7 +78,7 @@ class MyServer(SocketServer.BaseRequestHandler):
         pass
 
 if __name__ == '__main__':
-    server = SocketServer.ThreadingTCPServer(('127.0.0.1', 9999),MyServer)
+    server = SocketServer.ThreadingTCPServer(('0.0.0.0', 10000),MyServer)
     server.serve_forever()
 
 

@@ -5,6 +5,7 @@ import hashlib,time
 from DBClassMain import *
 from hashlib import md5
 
+#文件md5函数
 def md5_file(name):
     m = md5()
     a_file = open(name, 'rb')    #需要使用二进制格式读取文件内容
@@ -13,8 +14,9 @@ def md5_file(name):
     return m.hexdigest()
 
 
+#用户逻辑类
 class UserClass(object):
-    s = DbInterface('10.10.206.193','chocolee','123456','chocolee')
+    s = DbInterface('10.10.206.193','chocolee','123456','chocolee')  #连接数据库信息
 
     def __init__(self,user,passwd):
         self.user = user
@@ -55,7 +57,6 @@ class UserClass(object):
             sql = "update user set flag = 1 where username = '%s'" %self.user
             self.s.query(sql)
             self.s.commit()
-            self.s.close()
         else:
             return False
 
