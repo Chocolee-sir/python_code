@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding:utf-8
 __author__ = 'Chocolee'
-from UserClass import UserInfo
+from UserMDBClass import UserInfo
 import time
 
 U = UserInfo('admin')
