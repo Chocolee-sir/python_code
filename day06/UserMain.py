@@ -5,7 +5,9 @@ from UserClass import UserInfo
 
 def UserLogin():
     while True:
-        username = raw_input('请输入用户名:').strip()
+        username = raw_input('请输入用户名(exit退出):').strip()
+        if username == 'exit':
+            break
         U = UserInfo(username)
         if U.find_user() is None:
             print('输入的用户不存在，请输入正确！！')
@@ -14,7 +16,9 @@ def UserLogin():
             print('%s用户已锁定，请联系管理员解锁。'%username)
             break
         for i in range(3):
-            password = raw_input('请输入密码:').strip()
+            password = raw_input('请输入密码(exit退出):').strip()
+            if password == 'exit':
+                break
             if U.find_pass() == U.change_md5(password):
                 print('login')
                 return True

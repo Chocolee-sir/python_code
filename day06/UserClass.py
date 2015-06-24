@@ -6,6 +6,7 @@ from DBClassMain import *
 
 class UserInfo(object):
     s = DbInterface('10.10.206.193','chocolee','123456','chocolee')
+    b = '%'
 
     def __init__(self,username):
         self.username = username
@@ -24,8 +25,17 @@ class UserInfo(object):
         return self.s.queryRow(sql)[0]
 
     def user_lockstatus(self):
-        sql = "SELECT flag FROM user where username = '%s';" %self.username
+        sql = "SELECT flag FROM user WHERE username = '%s';" %self.username
         return self.s.queryRow(sql)[0]
+
+    def lock_userlist(self):
+        sql = "SELECT username FROM user WHERE flag = '1';"
+        return self.s.queryAll(sql)
+
+    def unlock_user(self,user):
+        sql = "UPDATE user SET flag = 0 WHERE username = '%s';" %user
+        self.s.query(sql)
+        self.s.commit()
 
     def lock_user(self):
         sql = "UPDATE user SET flag = 1 WHERE username = '%s';" %self.username
@@ -54,11 +64,31 @@ class UserInfo(object):
         info_dic = self.s.queryAll(sql)
         return info_dic
 
+    def user_info(self):
+        sql = "SELECT username FROM user;"
+        info_dic = self.s.queryAll(sql)
+        return info_dic
+
     def create_user(self,user_info):
         self.s.insert('user',user_info)
         self.s.commit()
 
     def create_host(self,host_info):
         self.s.insert('host',host_info)
+        self.s.commit()
+
+    def del_host(self,info):
+        sql = "DELETE FROM host WHERE hostinfo LIKE '%s%s'" %(info,self.b)
+        self.s.query(sql)
+        self.s.commit()
+
+    def del_user(self,info):
+        sql = "DELETE FROM user WHERE username = '%s'" %info
+        self.s.query(sql)
+        self.s.commit()
+
+    def modify_host(self,host,group):
+        sql = "UPDATE host SET groupname = '%s' WHERE hostinfo LIKE '%s%s' " %(group,host,self.b)
+        self.s.query(sql)
         self.s.commit()
 
