@@ -2,7 +2,7 @@
 # encoding:utf-8
 __author__ = 'Chocolee'
 import hashlib
-from DBClassMain import *
+from DBClass import *
 
 class UserInfo(object):
     s = DbInterface('10.10.206.193','chocolee','123456','chocolee')
@@ -19,6 +19,7 @@ class UserInfo(object):
     def find_user(self):
         sql = "SELECT 1 FROM user WHERE username = '%s' limit 1;" %self.username
         return self.s.queryRow(sql)
+
 
     def find_pass(self):
         sql = "SELECT passwd FROM user WHERE username = '%s';" %self.username
