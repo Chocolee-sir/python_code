@@ -6,6 +6,7 @@ from ParamikoClass import ParamikoClass
 import multiprocessing
 import time
 
+#验证用户登录函数
 def UserLogin():
     while True:
         username = raw_input('请输入用户名(exit退出):').strip()
@@ -32,16 +33,28 @@ def UserLogin():
                     return False
 
 
+#执行命令函数
 def paramiko_cmdrun(info,cmd):
     run = ParamikoClass(info[0],int(info[1]),info[2],info[3])
     try:
         run.cmd_run(cmd)
     except:
+        print('++++++%s++++++'%info[0])
         print('%s连接失败，请检查~~~~'%info[0])
+        print('\n')
 
+#推送文件函数
+def paramiko_putrun(info,filenamepath,remotepath):
+    run = ParamikoClass(info[0],int(info[1]),info[2],info[3])
+    try:
+        run.put_file(filenamepath,remotepath)
+    except:
+        print('++++++%s++++++'%info[0])
+        print('%s连接失败，请检查~~~~'%info[0])
+        print('\n')
 
-
-def cmd_run(ipinfo,iplist,cmd):
+#多进程执行函数
+def cmd_run(flag,ipinfo,iplist,cmd):
     info_list =[]
     tmp_list = []
     last_list = []
@@ -61,12 +74,20 @@ def cmd_run(ipinfo,iplist,cmd):
                     if n in i:
                         last_list.append(i)
     pool = multiprocessing.Pool(processes=2)
-    for i in last_list:
-        pool.apply_async(paramiko_cmdrun,(i,cmd,))
-    pool.close()
-    pool.join()
+    if flag == 'cmd.run':
+        for i in last_list:
+            pool.apply_async(paramiko_cmdrun,(i,cmd,))
+        pool.close()
+        pool.join()
+    elif flag == 'put.run':
+        path = cmd.split()
+        for i in last_list:
+            pool.apply_async(paramiko_putrun,(i,path[0],path[1],))
+        pool.close()
+        pool.join()
 
 
+#程序主函数
 def run():
     ip_info = UserLogin()
     if ip_info != False:
@@ -80,7 +101,7 @@ def run():
             print '支持批量远程执行命令，分发文件，从远端下载文件.\n' \
                   "语法:\n" \
                   "执行命令 cmd.run '8.8.8.8,192.168.1.1' 'cmd'\n" \
-                  "分发文件 put.run 'all' 'localfilepath' 'remotepath'\n"
+                  "分发文件 put.run 'all' '/tmp/a.txt' '/opt'\n"
             break
 
         while True:
@@ -95,8 +116,15 @@ def run():
                 if len(cmd) != 3:
                     print('输入错误，请输入正确的语法.')
                     continue
-                cmd_run(ip_info,cmd[1].strip().split(','),cmd[2])
-
+                cmd_run('cmd.run',ip_info,cmd[1].strip().split(','),cmd[2])
+            elif cmd[0].strip() == 'put.run':
+                if len(cmd) != 4:
+                    print('输入错误，请输入正确的语法.')
+                    continue
+                info = '%s %s' %(cmd[2],cmd[3])
+                cmd_run('put.run',ip_info,cmd[1].strip().split(','),info)
+            else:
+                print('输入有误，请重新输入！')
 
 if __name__ == '__main__':
     run()
