@@ -1,26 +1,10 @@
-# Copyright (C) 2003-2007  Robey Pointer <robeypointer@gmail.com>
-#
-# This file is part of paramiko.
-#
-# Paramiko is free software; you can redistribute it and/or modify it under the
-# terms of the GNU Lesser General Public License as published by the Free
-# Software Foundation; either version 2.1 of the License, or (at your option)
-# any later version.
-#
-# Paramiko is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-# A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
-# details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with Paramiko; if not, write to the Free Software Foundation, Inc.,
-# 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
-
-
 import socket
-import sys
+import os,sys,datetime,time
+from SqliteClass import *
 
-# windows does not have termios...
+
+s = SqliteClass('test.db')
+
 try:
     import termios
     import tty
@@ -29,23 +13,28 @@ except ImportError:
     has_termios = False
 
 
-def interactive_shell(chan):
+def interactive_shell(chan,django_loginuser,hostname):
+    print """\033[;34m------ Welcome %s Login %s ------\033[0m""" % (django_loginuser,hostname)
     if has_termios:
-        posix_shell(chan)
+        posix_shell(chan,django_loginuser,hostname)
     else:
         windows_shell(chan)
 
 
-def posix_shell(chan):
+def posix_shell(chan,django_loginuser,hostname):
     import select
-    
     oldtty = termios.tcgetattr(sys.stdin)
     try:
         tty.setraw(sys.stdin.fileno())
         tty.setcbreak(sys.stdin.fileno())
         chan.settimeout(0.0)
 
+        record = []
+        ''' record operation log '''
+        #day_time = time.strftime('%Y_%m_%d')
+        #f = open('audit_%s_%s.log' % (day_time,django_loginuser),'a')
         while True:
+	    date =time.strftime('%Y_%m_%d %H:%M:%S')
             r, w, e = select.select([chan, sys.stdin], [], [])
             if chan in r:
                 try:
@@ -61,7 +50,20 @@ def posix_shell(chan):
                 x = sys.stdin.read(1)
                 if len(x) == 0:
                     break
+                record.append(x)
                 chan.send(x)
+
+            if x == '\r':
+                cmd = ''.join(record).split('\r')[-2]
+                sql = "insert into audit_log(ophost,optime,opuser,opcmd) VALUES ('%s','%s','%s','%s')" \
+                      % (hostname,date,django_loginuser,cmd)
+                s.query(sql)
+                #log = "%s | %s | %s | %s\n" % (hostname,date,django_loginuser,cmd)
+                #f.write(log)
+                #f.flush()
+       # f.close()
+        s.commit()
+
 
     finally:
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
@@ -95,3 +97,4 @@ def windows_shell(chan):
     except EOFError:
         # user hit ^Z or F6
         pass
+

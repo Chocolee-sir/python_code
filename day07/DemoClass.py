@@ -59,5 +59,5 @@ class DemoSimple(object):
 
 
 if __name__ == '__main__':
-    u = DemoSimple('10.10.206.194','root',22,'e_OP@194#!')
+    u = DemoSimple('192.168.199.110','test',22,'test@110#!*')
     u.connect()
