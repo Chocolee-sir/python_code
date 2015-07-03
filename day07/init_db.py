@@ -47,7 +47,7 @@ passwd varchar(50) not null);
 host_table ='''
 create table if not exists host_info(
 host varchar(20)  not null,
-port smallint(5) not null DEFAULT 22,
+port varchar(10) not null DEFAULT '22',
 user varchar(8) not null DEFAULT 'root',
 passwd varchar(50) not null,
 flag smallint(1) not null DEFAULT 0);

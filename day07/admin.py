@@ -9,7 +9,7 @@ def meu(dic):
     for k,v in sorted(dic.items() ,key = lambda x:x[0] ,reverse=False):
         print k,v
 
-#简单实现
+#简单实现有BUG
 def addFuser():
     while True:
         user = raw_input('请输入用户名(exit返回上级):').strip()
@@ -26,7 +26,7 @@ def addFuser():
             time.sleep(1)
             break
 
-#简单实现
+#简单实现有BUG
 def addHosts():
     while True:
         host = raw_input('请输入主机ip:').strip()
@@ -37,6 +37,7 @@ def addHosts():
         passwd = raw_input('请输入主机登陆密码:').strip()
         u.addHost(host,port,user,passwd)
         print('创建主机 %s 成功。'%host)
+        time.sleep(1)
         break
 
 def findHosts():
@@ -69,6 +70,8 @@ def groupInfo():
             print('目前有如下组:')
             for k,v in info.items():
                 print(v[0])
+                if k % 2 == 0:
+                    print('------------------')
             print('******************************')
             meu_dic = {
                 '1':'创建新的主机组',
@@ -88,7 +91,7 @@ def groupInfo():
                     u.addGroup(gname,gid,ghost)
                     print('创建%s组成功！'%gname)
                     break
-            if choice == '2':
+            elif choice == '2':
                 while True:
                     print('有如下组：')
                     dic_info = u.findGroupName()
@@ -106,11 +109,84 @@ def groupInfo():
                     print('为%s组添加%s主机成功！'%(gname,ghost))
                     time.sleep(1)
                     break
-            if choice == '3':
+            elif choice == '3':
                 break
+            else:
+                print('请输入正确的选项。')
 
 
+#简单实现，有BUG
 def userInfo():
-    pass
+    meu_user = {
+        '1':'查看用户包含的主机组信息',
+        '2':'为用户添加主机组',
+        '3':'返回上级菜单'
+    }
+    while True:
+        print('*******************')
+        meu(meu_user)
+        print('*******************')
+        choice = raw_input('请选择:').strip()
+        if choice == '1':
+            print('目前有如下用户:')
+            user_dic = u.findFuser()
+            for k,v in user_dic.items():
+                print(v[0])
+            user = raw_input('请输入用户名查询:')
+            userinfo = u.UserGroupInfo(user)
+            print('用户%s包含的主机组信息:' %user)
+            for k,v in userinfo.items():
+                print(v[0])
+            time.sleep(1)
+        elif choice == '2':
+            while True:
+                print('目前有如下用户:')
+                user_dic = u.findFuser()
+                for k,v in user_dic.items():
+                    print(v[0])
+                user = raw_input('请输入用户:').strip()
+                print('目前有如下组:')
+                dic_info = u.findGroupName()
+                for k,v in dic_info.items():
+                    print(v[0])
+                group = raw_input('请选择一个组:').strip()
+                gid = u.findGnameGid(group)
+                u.addUserInfo(user,gid,'root')
+                print('为%s用户添加%s组'%(user,group))
+                break
+        elif choice == '3':
+            break
+        else:
+            print('请输入正确的选项。。')
 
 
+def adminRun():
+    admin_meu = {
+        '1':'创建堡垒机用户',
+        '2':'添加主机',
+        '3':'主机组操作',
+        '4':'用户添加主机组操作',
+        '5':'退出'
+    }
+
+    while True:
+        print('+++++++++++++++++++++++')
+        meu(admin_meu)
+        print('+++++++++++++++++++++++')
+        choice = raw_input('请选择:').strip()
+        if choice == '1':
+            addFuser()
+        elif choice == '2':
+            addHosts()
+        elif choice == '3':
+            groupInfo()
+        elif choice == '4':
+            userInfo()
+        elif choice == '5':
+            print('byebye~~')
+            break
+        else:
+            print('请输入正确的选项.')
+
+if __name__ == '__main__':
+    adminRun()

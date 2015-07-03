@@ -58,7 +58,34 @@ class LSqlClass(object):
         sql = "select groupid from group_info where groupname ='%s' group by groupid" %gname
         return self.s.queryRow(sql)[0]
 
+    def findFuser(self):
+        sql = "select user from fortress_user"
+        return self.s.queryAll(sql)
 
-#u = LSqlClass()
-#a = u.findGnameGid('webgroup')
-#print(a)
+    def addUserInfo(self,user,groupid,sshuser):
+        sql = "insert into user_info(user,groupid,sshuser) values('%s','%s','%s')" %(user,groupid,sshuser)
+        self.s.query(sql)
+        self.s.commit()
+
+    def UserGroupInfo(self,username):
+        sql = "select g.groupname from user_info u join group_info g \
+        using (groupid) where u.user='%s' group by g.groupname;" %username
+        return  self.s.queryAll(sql)
+
+    def findFuserName(self,user):
+        sql = "select 1 from fortress_user where user = '%s' limit 1 " %user
+        return self.s.queryRow(sql)
+
+    def findFuserPass(self,user):
+        sql = "select passwd from fortress_user where user= '%s' " %user
+        return self.s.queryRow(sql)[0]
+
+    def findGroupHosts(self,groupname):
+        sql = "select serverip from group_info where groupname = '%s'" %groupname
+        return self.s.queryAll(sql)
+
+    def findHostInfo(self,host):
+        sql = "select host,port,user,passwd from host_info  where host = '%s'" %host
+        return self.s.queryAll(sql)
+
+
