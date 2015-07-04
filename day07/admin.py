@@ -160,13 +160,27 @@ def userInfo():
             print('请输入正确的选项。。')
 
 
+def selectAuditLog():
+    print('欢迎登录日志审计系统~~~~')
+    while True:
+        info = raw_input('请输入1查询日志(exit返回):').strip()
+        if info == 'exit':
+            break
+        elif info == '1':
+            u.auditLog()
+            print('\n')
+        else:
+            print('请输入正确的选项。。')
+
+
 def adminRun():
     admin_meu = {
         '1':'创建堡垒机用户',
         '2':'添加主机',
         '3':'主机组操作',
         '4':'用户添加主机组操作',
-        '5':'退出'
+        '5':'查询审计日志',
+        '6':'退出'
     }
 
     while True:
@@ -183,6 +197,8 @@ def adminRun():
         elif choice == '4':
             userInfo()
         elif choice == '5':
+            selectAuditLog()
+        elif choice == '6':
             print('byebye~~')
             break
         else:

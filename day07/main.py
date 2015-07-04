@@ -60,7 +60,7 @@ def mainRun():
                 host_info = u.findHostInfo(ipinfo)
                 for k,v in host_info.items():
                     host_list.append(str(v[0]))
-                s = DemoSimple(host_list[0],host_list[2],int(host_list[1]),host_list[3])
+                s = DemoSimple(host_list[0],int(host_list[1]),user,host_list[2],host_list[3])
                 s.connect()
 
 

@@ -9,10 +9,11 @@ import interactive
 
 class DemoSimple(object):
 
-    def __init__(self,hostname,username,port,pw):
+    def __init__(self,hostname,port,loginuser,username,pw):
         self.hostname = hostname
-        self.username = username
         self.port = port
+        self.loginuser = loginuser
+        self.username = username
         self.pw = pw
 
     def connect(self):
@@ -44,7 +45,7 @@ class DemoSimple(object):
             chan.invoke_shell()
             print '*** Here we go!'
             print
-            interactive.interactive_shell(chan,self.username,self.hostname)
+            interactive.interactive_shell(chan,self.loginuser,self.username,self.hostname)
             chan.close()
             t.close()
 
@@ -57,7 +58,3 @@ class DemoSimple(object):
                 pass
             sys.exit(1)
 
-
-if __name__ == '__main__':
-    u = DemoSimple('192.168.199.110','test',22,'test@110#!*')
-    u.connect()

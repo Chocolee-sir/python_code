@@ -88,4 +88,6 @@ class LSqlClass(object):
         sql = "select host,port,user,passwd from host_info  where host = '%s'" %host
         return self.s.queryAll(sql)
 
-
+    def auditLog(self):
+        sql = "select * from audit_log"
+        self.s.queryLog(sql)

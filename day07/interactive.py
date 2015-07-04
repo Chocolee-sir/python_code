@@ -13,15 +13,15 @@ except ImportError:
     has_termios = False
 
 
-def interactive_shell(chan,django_loginuser,hostname):
+def interactive_shell(chan,django_loginuser,username,hostname):
     print """\033[;34m------ Welcome %s Login %s ------\033[0m""" % (django_loginuser,hostname)
     if has_termios:
-        posix_shell(chan,django_loginuser,hostname)
+        posix_shell(chan,django_loginuser,username,hostname)
     else:
         windows_shell(chan)
 
 
-def posix_shell(chan,django_loginuser,hostname):
+def posix_shell(chan,django_loginuser,username,hostname):
     import select
     oldtty = termios.tcgetattr(sys.stdin)
     try:
@@ -34,7 +34,7 @@ def posix_shell(chan,django_loginuser,hostname):
         #day_time = time.strftime('%Y_%m_%d')
         #f = open('audit_%s_%s.log' % (day_time,django_loginuser),'a')
         while True:
-	    date =time.strftime('%Y_%m_%d %H:%M:%S')
+	    date =time.strftime('%Y-%m-%d %H:%M:%S')
             r, w, e = select.select([chan, sys.stdin], [], [])
             if chan in r:
                 try:
@@ -55,8 +55,10 @@ def posix_shell(chan,django_loginuser,hostname):
 
             if x == '\r':
                 cmd = ''.join(record).split('\r')[-2]
-                sql = "insert into audit_log(ophost,optime,opuser,opcmd) VALUES ('%s','%s','%s','%s')" \
-                      % (hostname,date,django_loginuser,cmd)
+                if cmd == '':
+                    continue
+                sql = "insert into audit_log(ophost,optime,loginuser,opuser,opcmd) VALUES ('%s','%s','%s','%s','%s')" \
+                      % (hostname,date,django_loginuser,username,cmd)
                 s.query(sql)
                 #log = "%s | %s | %s | %s\n" % (hostname,date,django_loginuser,cmd)
                 #f.write(log)

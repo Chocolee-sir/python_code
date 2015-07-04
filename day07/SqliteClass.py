@@ -34,6 +34,13 @@ class SqliteClass(object):
                  n += 1
         return _d
 
+    def queryLog(self,sql):
+        self.query(sql)
+        result = self.cur.fetchall()
+        print('ip地址 | 操作时间 | 登录堡垒机用户 | 登录远程机用户 | 操作命令')
+        for i in result:
+            print '%s | %s | %s | %s | %s' %(i[0],i[1],i[2],i[3],i[4])
+
     def insert(self,p_table_name,p_data):
         for key in p_data:
             p_data[key] = "'"+str(p_data[key])+"'"
@@ -48,4 +55,3 @@ class SqliteClass(object):
     def close(self):
         self.cur.close()
         self.conn.close()
-

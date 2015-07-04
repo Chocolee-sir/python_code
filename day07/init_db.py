@@ -27,13 +27,13 @@ group_index = 'create unique index if not exists groupid on group_info(groupid,g
 #日志审计表
 auditlog_table='''
 create table if not exists audit_log(
-id integer primary key autoincrement,
 ophost varchar(20) not null,
 optime datetime not null,
+loginuser varchar(8) not null,
 opuser varchar(8) not null,
-opcmd varchar(20) not null);
+opcmd varchar(100) not null);
 '''
-auditlog_index = 'create index if not exists groupid on audit_log(ophost)'
+auditlog_index = 'create index if not exists ophost on audit_log(ophost)'
 
 #堡垒机登陆用户信息表
 fortress_table ='''
