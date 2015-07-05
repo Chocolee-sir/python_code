@@ -57,6 +57,7 @@ def posix_shell(chan,django_loginuser,username,hostname):
                 cmd = ''.join(record).split('\r')[-2]
                 if cmd == '':
                     continue
+                cmd = cmd.replace('\t','|tab|')
                 sql = "insert into audit_log(ophost,optime,loginuser,opuser,opcmd) VALUES ('%s','%s','%s','%s','%s')" \
                       % (hostname,date,django_loginuser,username,cmd)
                 s.query(sql)
