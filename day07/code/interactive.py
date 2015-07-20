@@ -61,11 +61,12 @@ def posix_shell(chan,django_loginuser,username,hostname):
                 sql = "insert into audit_log(ophost,optime,loginuser,opuser,opcmd) VALUES ('%s','%s','%s','%s','%s')" \
                       % (hostname,date,django_loginuser,username,cmd)
                 s.query(sql)
+                s.commit()
                 #log = "%s | %s | %s | %s\n" % (hostname,date,django_loginuser,cmd)
                 #f.write(log)
                 #f.flush()
        # f.close()
-        s.commit()
+        s.close()
 
 
     finally:
